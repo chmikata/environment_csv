@@ -1,7 +1,10 @@
 {
     "cSpell.words": [
         "cmux",
+        "Creater",
         "cstream",
+        "csvconvert",
+        "dbname",
         "dynaport",
         "gsrv",
         "jsonnetd",
@@ -9,8 +12,12 @@
         "metacontroller",
         "newgrpc",
         "permited",
+        "pgconf",
+        "pgdb",
         "proglog",
         "pstream",
+        "sarcher",
+        "sslmode",
         "statefulsets",
         "stretchr"
     ]
