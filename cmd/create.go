@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/chmikata/csvconvert/internal/logic"
+	"github.com/chmikata/csvconvert/internal/application"
 	"github.com/spf13/cobra"
 )
 
@@ -16,9 +16,11 @@ var outputFile string
 // createCmd represents the create command
 var createCmd = &cobra.Command{
 	Use:   "create",
-	Short: "create CSV from contract-data and detail-data",
-	Long:  "create CSV from contract-data and detail-data.",
+	Short: "create CSV from contract data and detail data",
+	Long:  "create CSV from contract data and detail data.",
 	Run: func(cmd *cobra.Command, args []string) {
+		hc := application.NewHbEnvironmentController()
+
 		c := logic.NewController(
 			logic.NewContractCSVCreater(),
 			logic.NewFileWriter(logic.WithFilePath(outputFile)),

@@ -1,13 +1,15 @@
-package logic
+package implement
 
 import (
 	"os"
 	"strings"
 
-	"github.com/chmikata/csvconvert/internal/convert"
+	"github.com/chmikata/csvconvert/internal/domain/model"
+	"github.com/chmikata/csvconvert/internal/userinterface"
+	"github.com/chmikata/csvconvert/internal/utils/csv"
 )
 
-var _ CSVWriter = (*FileWriter)(nil)
+var _ userinterface.OutputWriter = (*FileWriter)(nil)
 
 type FileWriter struct {
 	filePath string
@@ -31,8 +33,8 @@ func NewFileWriter(options ...Option) *FileWriter {
 	return f
 }
 
-func (f *FileWriter) WriteCSV(data []CSV) error {
-	csv, err := convert.Marshal(data)
+func (f *FileWriter) WriteCSV(data []model.HbEnvironment) error {
+	csv, err := csv.Marshal(data)
 	if err != nil {
 		return err
 	}

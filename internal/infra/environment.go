@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/chmikata/csvconvert/internal/domain/model"
 	_ "github.com/lib/pq"
 )
 
@@ -21,7 +22,7 @@ type Detail struct {
 	Detail3 string
 }
 
-type PgDB struct {
+type HbEnvironmentRepository struct {
 	host   string
 	port   int
 	user   string
@@ -29,28 +30,28 @@ type PgDB struct {
 	dbName string
 }
 
-type Option func(*PgDB)
+type Option func(*HbEnvironmentRepository)
 
 func WithUser(user string) Option {
-	return func(pgdb *PgDB) {
-		pgdb.user = user
+	return func(repo *HbEnvironmentRepository) {
+		repo.user = user
 	}
 }
 
 func WithPass(pass string) Option {
-	return func(pgdb *PgDB) {
-		pgdb.pass = pass
+	return func(repo *HbEnvironmentRepository) {
+		repo.pass = pass
 	}
 }
 
 func WithDbName(dbname string) Option {
-	return func(pgdb *PgDB) {
-		pgdb.dbName = dbname
+	return func(repo *HbEnvironmentRepository) {
+		repo.dbName = dbname
 	}
 }
 
-func NewPgDB(host string, port int, options ...Option) *PgDB {
-	pgdb := &PgDB{
+func NewHbEnvironmentRepository(host string, port int, options ...Option) *HbEnvironmentRepository {
+	repo := &HbEnvironmentRepository{
 		host:   host,
 		port:   port,
 		user:   "postgres",
@@ -59,21 +60,46 @@ func NewPgDB(host string, port int, options ...Option) *PgDB {
 	}
 
 	for _, option := range options {
-		option(pgdb)
+		option(repo)
 	}
-	return pgdb
+	return repo
 }
 
-func (p *PgDB) SearchContracts() ([]Contract, error) {
+func (hr *HbEnvironmentRepository) CreateEnvironment() ([]model.HbEnvironment, error) {
 	dsn := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%d sslmode=disable",
-		p.user, p.pass, p.dbName, p.host, p.port,
+		hr.user, hr.pass, hr.dbName, hr.host, hr.port,
 	)
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
 		return nil, err
 	}
 	defer db.Close()
+	contracts, err := hr.searchContracts(db)
+	if err != nil {
+		return nil, err
+	}
+	var csv []model.HbEnvironment
+	for _, contract := range contracts {
+		details, err := hr.searchDetails(db, contract.Id)
+		if err != nil {
+			return nil, err
+		}
+		for _, detail := range details {
+			csv = append(csv, model.HbEnvironment{
+				Id:      contract.Id,
+				Header1: contract.Header1,
+				Header2: contract.Header2,
+				Header3: contract.Header3,
+				Detail1: detail.Detail1,
+				Detail2: detail.Detail2,
+				Detail3: detail.Detail3,
+			})
+		}
+	}
+	return csv, nil
+}
 
+func (hr *HbEnvironmentRepository) searchContracts(db *sql.DB) ([]Contract, error) {
 	rows, err := db.Query("SELECT * FROM contract")
 	if err != nil {
 		return nil, err
@@ -92,16 +118,7 @@ func (p *PgDB) SearchContracts() ([]Contract, error) {
 	return contracts, nil
 }
 
-func (p *PgDB) SearchDetails(id string) ([]Detail, error) {
-	dsn := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%d sslmode=disable",
-		p.user, p.pass, p.dbName, p.host, p.port,
-	)
-	db, err := sql.Open("postgres", dsn)
-	if err != nil {
-		return nil, err
-	}
-	defer db.Close()
-
+func (hr *HbEnvironmentRepository) searchDetails(db *sql.DB, id string) ([]Detail, error) {
 	rows, err := db.Query("SELECT * FROM detail WHERE id = $1", id)
 	if err != nil {
 		return nil, err

@@ -12,9 +12,9 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "csvconvert",
-	Short: "csvconvert is a CLI tool to convert CSV",
-	Long:  "csvconvert is a CLI tool to convert CSV.",
+	Use:   "environment_csv",
+	Short: "environment_csv is a CLI tool to environment CSV",
+	Long:  "environment_csv is a CLI tool to environment CSV.",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
