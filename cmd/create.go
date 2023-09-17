@@ -27,7 +27,7 @@ var createCmd = &cobra.Command{
 				infra.WithPass("postgres"),
 				infra.WithDbName("environment"),
 			),
-			implement.NewStdOutWriter(),
+			implement.NewFileWriter(implement.WithFilePath(outputFile)),
 		)
 		if err := c.CreateEnvironment(); err != nil {
 			fmt.Println("CSV create failed.")
