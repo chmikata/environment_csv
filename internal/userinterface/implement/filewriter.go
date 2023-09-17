@@ -4,9 +4,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/chmikata/csvconvert/internal/domain/model"
-	"github.com/chmikata/csvconvert/internal/userinterface"
-	"github.com/chmikata/csvconvert/internal/utils/csv"
+	"github.com/chmikata/environment_csv/internal/domain/model"
+	"github.com/chmikata/environment_csv/internal/userinterface"
+	"github.com/chmikata/environment_csv/internal/utils/csv"
 )
 
 var _ userinterface.OutputWriter = (*FileWriter)(nil)
