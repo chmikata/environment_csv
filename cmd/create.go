@@ -7,7 +7,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/chmikata/csvconvert/internal/application"
+	"github.com/chmikata/environment_csv/internal/application"
+	"github.com/chmikata/environment_csv/internal/infra"
+	"github.com/chmikata/environment_csv/internal/userinterface/implement"
 	"github.com/spf13/cobra"
 )
 
@@ -16,16 +18,18 @@ var outputFile string
 // createCmd represents the create command
 var createCmd = &cobra.Command{
 	Use:   "create",
-	Short: "create CSV from contract data and detail data",
-	Long:  "create CSV from contract data and detail data.",
+	Short: "create environment CSV from contract-data and detail-data",
+	Long:  "create environment CSV from contract-data and detail-data.",
 	Run: func(cmd *cobra.Command, args []string) {
-		hc := application.NewHbEnvironmentController()
-
-		c := logic.NewController(
-			logic.NewContractCSVCreater(),
-			logic.NewFileWriter(logic.WithFilePath(outputFile)),
+		c := application.NewController(
+			infra.NewHbEnvironment("localhost", 5432,
+				infra.WithUser("postgres"),
+				infra.WithPass("postgres"),
+				infra.WithDbName("environment"),
+			),
+			implement.NewStdOutWriter(),
 		)
-		if err := c.CreateCSV(); err != nil {
+		if err := c.CreateEnvironment(); err != nil {
 			fmt.Println("CSV create failed.")
 			os.Exit(1)
 		}

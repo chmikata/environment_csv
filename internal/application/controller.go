@@ -1,29 +1,29 @@
-package logic
+package application
 
 import (
-	"github.com/chmikata/csvconvert/internal/domain/repository"
-	"github.com/chmikata/csvconvert/internal/userinterface"
+	"github.com/chmikata/environment_csv/internal/domain/repository"
+	"github.com/chmikata/environment_csv/internal/userinterface"
 )
 
-type HbEnvironmentController struct {
+type Controller struct {
 	repository repository.HbEnvironmentRepository
 	writer     userinterface.OutputWriter
 }
 
 func NewController(repository repository.HbEnvironmentRepository,
-	writer userinterface.OutputWriter) *HbEnvironmentController {
-	return &HbEnvironmentController{
+	writer userinterface.OutputWriter) *Controller {
+	return &Controller{
 		repository: repository,
 		writer:     writer,
 	}
 }
 
-func (hc *HbEnvironmentController) CreateEnvironment() error {
-	data, err := hc.repository.CreateEnvironment()
+func (c *Controller) CreateEnvironment() error {
+	data, err := c.repository.GetHbEnvironment()
 	if err != nil {
 		return err
 	}
-	if err := hc.writer.WriteCSV(data); err != nil {
+	if err := c.writer.WriteCSV(data); err != nil {
 		return err
 	}
 	return nil
