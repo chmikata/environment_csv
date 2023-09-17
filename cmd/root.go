@@ -12,9 +12,9 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "csvconvert",
-	Short: "csvconvert is a CLI tool to convert CSV",
-	Long:  "csvconvert is a CLI tool to convert CSV.",
+	Use:   "environment_csv",
+	Short: "environment_csv is a CLI tool to environment CSV",
+	Long:  "environment_csv is a CLI tool to environment CSV.",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -32,7 +32,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.csvconvert.yaml)")
+	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.environment_csv.yaml)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
